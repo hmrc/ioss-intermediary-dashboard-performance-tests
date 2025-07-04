@@ -17,6 +17,7 @@
 package uk.gov.hmrc.perftests.dashboard
 
 import io.gatling.core.Predef._
+import io.gatling.core.session.Expression
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
@@ -26,9 +27,42 @@ object DashboardRequests extends ServicesConfiguration {
   val baseUrl: String = baseUrlFor("ioss-intermediary-dashboard-frontend")
   val route: String   = "/intermediary-dashboard"
 
-  val navigateToHomePage: HttpRequestBuilder =
-    http("Navigate to Home Page")
-      .get(s"$baseUrl$route")
+  val loginUrl         = baseUrlFor("auth-login-stub")
+  val homePage: String = s"$baseUrl$route/your-account"
+
+  def inputSelectorByName(name: String): Expression[String] = s"input[name='$name']"
+
+  def getAuthorityWizard =
+    http("Get Authority Wizard page")
+      .get(loginUrl + s"/auth-login-stub/gg-sign-in")
       .check(status.in(200, 303))
+
+  def postAuthorityWizard =
+    http("Enter Auth login credentials ")
+      .post(loginUrl + s"/auth-login-stub/gg-sign-in")
+      .formParam("authorityId", "")
+      .formParam("gatewayToken", "")
+      .formParam("credentialStrength", "strong")
+      .formParam("confidenceLevel", "50")
+      .formParam("affinityGroup", "Organisation")
+      .formParam("email", "user@test.com")
+      .formParam("credentialRole", "User")
+      .formParam("redirectionUrl", baseUrl + route)
+      .formParam("enrolment[0].name", "HMRC-MTD-VAT")
+      .formParam("enrolment[0].taxIdentifier[0].name", "VRN")
+      .formParam("enrolment[0].taxIdentifier[0].value", "100000001")
+      .formParam("enrolment[0].state", "Activated")
+      .formParam("enrolment[1].name", "HMRC-IOSS-INT")
+      .formParam("enrolment[1].taxIdentifier[0].name", "IntNumber")
+      .formParam("enrolment[1].taxIdentifier[0].value", "IN2501234567")
+      .formParam("enrolment[1].state", "Activated")
+      .check(status.in(200, 303))
+      .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
+
+  def getHomePage =
+    http("Get Home Page")
+      .get(homePage)
+      .header("Cookie", "mdtp=${mdtpCookie}")
+      .check(status.in(200))
 
 }
