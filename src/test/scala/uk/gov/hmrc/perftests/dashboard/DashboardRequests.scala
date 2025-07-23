@@ -25,7 +25,7 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 object DashboardRequests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("ioss-intermediary-dashboard-frontend")
-  val route: String   = "/intermediary-dashboard"
+  val route: String   = "/pay-clients-vat-on-eu-sales/manage-ioss-returns-payments-clients"
 
   val loginUrl         = baseUrlFor("auth-login-stub")
   val homePage: String = s"$baseUrl$route/your-account"
