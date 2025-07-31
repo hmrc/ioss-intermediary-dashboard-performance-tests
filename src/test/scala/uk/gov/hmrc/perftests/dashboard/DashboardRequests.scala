@@ -62,7 +62,7 @@ object DashboardRequests extends ServicesConfiguration {
   def getHomePage =
     http("Get Home Page")
       .get(homePage)
-      .header("Cookie", "mdtp=${mdtpCookie}")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(status.in(200))
 
 }
