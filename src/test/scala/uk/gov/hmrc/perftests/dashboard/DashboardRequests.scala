@@ -56,7 +56,7 @@ object DashboardRequests extends ServicesConfiguration {
       .formParam("enrolment[0].state", "Activated")
       .formParam("enrolment[1].name", "HMRC-IOSS-INT")
       .formParam("enrolment[1].taxIdentifier[0].name", "IntNumber")
-      .formParam("enrolment[1].taxIdentifier[0].value", "IN2501234567")
+      .formParam("enrolment[1].taxIdentifier[0].value", "IN9001234567")
       .formParam("enrolment[1].state", "Activated")
       .check(status.in(200, 303))
       .check(headerRegex("Set-Cookie", """mdtp=(.*)""").saveAs("mdtpCookie"))
@@ -64,6 +64,12 @@ object DashboardRequests extends ServicesConfiguration {
   def getHomePage =
     http("Get Home Page")
       .get(homePage)
+      .header("Cookie", "mdtp=#{mdtpCookie}")
+      .check(status.in(200))
+
+  def getClientList =
+    http("Get Client List Page")
+      .get(s"$baseUrl$route/client-list")
       .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(status.in(200))
 
