@@ -21,10 +21,11 @@ import uk.gov.hmrc.perftests.dashboard.DashboardRequests._
 
 class DashboardSimulation extends PerformanceTestRunner {
 
-  setup("dashboard", "IOSS Intermediary Dashboard Journey") withRequests (
+  setup("viewClientList", "IOSS Intermediary Dashboard Journey - Client List") withRequests (
     getAuthorityWizard,
     postAuthorityWizard,
-    getHomePage
+    getHomePage,
+    getClientList
   )
 
   runSimulation()
