@@ -28,5 +28,12 @@ class DashboardSimulation extends PerformanceTestRunner {
     getClientList
   )
 
+  setup("viewSubmittedReturns", "IOSS Intermediary Dashboard Journey - Submitted Returns") withRequests (
+    getAuthorityWizard,
+    postAuthorityWizard,
+    getHomePage,
+    getSubmittedReturns
+  )
+
   runSimulation()
 }
