@@ -73,4 +73,10 @@ object DashboardRequests extends ServicesConfiguration {
       .header("Cookie", "mdtp=#{mdtpCookie}")
       .check(status.in(200))
 
+  def getSubmittedReturns =
+    http("Get Submitted Returns Page")
+      .get(s"$baseUrl$route/client-returns-list")
+      .header("Cookie", "mdtp=#{mdtpCookie}")
+      .check(status.in(200))
+
 }
